@@ -1,0 +1,43 @@
+<%- layout("/layouts/boilerplate") -%>
+
+<section class="bookings-page">
+    <div class="page-header">
+        <h1>Your Reservations</h1>
+        <p>Review your upcoming stays and make sure your trip details are correct.</p>
+    </div>
+
+    <% if (bookings.length > 0) { %>
+        <div class="row g-4">
+            <% for (let booking of bookings) { %>
+                <div class="col-md-6">
+                    <div class="card booking-card">
+                        <div class="card-body">
+                            <h3><a href="/listings/<%= booking.listing._id %>"><%= booking.listing.title %></a></h3>
+                            <p class="text-muted"><%= booking.listing.location %>, <%= booking.listing.country %></p>
+                            <p><strong>Adults:</strong> <%= booking.adults %></p>
+                            <p><strong>Children:</strong> <%= booking.children %></p>
+                            <% if (booking.checkIn && booking.checkOut) { %><p><strong>Dates:</strong> <%= booking.checkIn.toLocaleDateString("en-IN") %> to <%= booking.checkOut.toLocaleDateString("en-IN") %></p><% } %>
+                            <p class="text-secondary">Booked on <%= booking.createdAt.toLocaleDateString("en-IN") %></p>
+                            <% if (booking.status === "rejected") { %>
+                                <span class="badge bg-danger">Rejected</span>
+                            <% } else if (!booking.confirmed) { %>
+                                <span class="badge bg-warning text-dark">Reserved - Payment Pending</span>
+                                <a href="/payments/checkout?bookingId=<%= booking._id %>" class="btn add-btn btn-sm mt-3 me-2">Pay Now</a>
+                            <% } else { %>
+                                <span class="badge bg-success">Confirmed</span>
+                            <% } %>
+                            <form method="POST" action="/bookings/<%= booking._id %>?_method=DELETE" onsubmit="return confirm('Are you sure you want to cancel this reservation?');" class="d-inline">
+                                <button class="btn dl-btn btn-sm mt-3">Cancel Reservation</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    <% } else { %>
+        <div class="empty-copy">
+            <h4>No reservations yet</h4>
+            <p>Book a stay and it will appear here.</p>
+        </div>
+    <% } %>
+</section>

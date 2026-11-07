@@ -14,6 +14,32 @@ module.exports.isLoggedIn=(req,res,next)=>{
     next();
 };
 
+module.exports.isProvider=(req,res,next)=>{
+    if(!req.isAuthenticated()){
+        req.session.redirectUrl=req.originalUrl;
+        req.flash("error","You must be logged in first.");
+        return res.redirect("/login");
+    }
+    if(req.user.role !== "provider"){
+        req.flash("error","Only providers can access this area.");
+        return res.redirect("/listings");
+    }
+    next();
+};
+
+module.exports.isGuest=(req,res,next)=>{
+    if(!req.isAuthenticated()){
+        req.session.redirectUrl=req.originalUrl;
+        req.flash("error","You must be logged in first.");
+        return res.redirect("/login");
+    }
+    if(req.user.role === "provider"){
+        req.flash("error","Providers cannot make guest bookings.");
+        return res.redirect("/provider/dashboard");
+    }
+    next();
+};
+
 module.exports.savedRedirectUrl=(req,res,next)=>{
     if(req.session.redirectUrl){
         res.locals.redirectUrl=req.session.redirectUrl;
@@ -24,7 +50,7 @@ module.exports.savedRedirectUrl=(req,res,next)=>{
 module.exports.isOwner=async(req,res,next)=>{
     let { id } = req.params;
     let listing=await Listing.findById(id);
-    if(!listing.owner._id.equals(res.locals.currUser._id)){
+    if(!listing || !listing.owner._id.equals(res.locals.currUser._id)){
         req.flash("error","You don't have permission to edit");
         return res.redirect(`/listings/${id}`);
     }

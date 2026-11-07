@@ -90,6 +90,24 @@ const listingSchema = new Schema({
             "boats"
         ],
         index: true
+    },
+
+    address: String,
+    amenities: [String],
+    roomTypes: [
+        {
+            name: { type: String, required: true },
+            price: { type: Number, min: 0 },
+            availability: { type: Number, min: 0, default: 1 }
+        }
+    ],
+    checkIn: String,
+    checkOut: String,
+    houseRules: String,
+    contact: String,
+    available: {
+        type: Boolean,
+        default: true
     }
 });
 

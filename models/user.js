@@ -9,9 +9,15 @@ const userSchema = new Schema({
         type: String,
         required: true,
         unique: true
+    },
+    role: {
+        type: String,
+        enum: ["guest", "provider"],
+        default: "guest"
     }
 });
 
 userSchema.plugin(passportLocalMongoose);
 
 module.exports = mongoose.model("User", userSchema);
+

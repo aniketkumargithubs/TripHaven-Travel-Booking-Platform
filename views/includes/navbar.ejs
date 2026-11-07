@@ -1,54 +1,39 @@
-<style>
-    .btn-search{
-        background-color: #fe424d;
-        color:#fff;
-        border-radius:25px ;
-        padding:0 1rem 0 1rem;
-    }
-    .btn-search:hover{
-        background-color: #fe424d;
-        color:#fff;
-    }
-    .btn-search i{
-        display:inline;
-        margin-right: 0.5rem;
-    }
-    .search-input{
-        border-radius: 25px;
-        padding:0.5rem 3rem 0.5rem 3rem;
-    }
-    
-</style>
-<nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="/listings"><i class="fa-regular fa-compass"></i></a>
+<nav class="navbar navbar-expand-lg sticky-top site-navbar">
+    <div class="container-fluid nav-shell">
+        <a class="navbar-brand brand-mark" href="/listings">
+            <span class="brand-icon"><i class="fa-regular fa-compass"></i></span>
+            <span class="brand-text">TripHaven_ Travel Booking Platform</span>
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup">
         <span class="navbar-toggler-icon"></span>
         </button>
         
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav">
+        <div class="navbar-nav nav-primary">
             <a class="nav-link" href="/listings">Explore</a>
-            
-            
+            <% if (currUser && currUser.role === "provider") { %>
+                <a class="nav-link" href="/listings/new">Host a Stay</a>
+            <% } %>
         </div>
-        <div class="navbar-nav ms-auto">
-            <form class="d-flex" role="search">
-                <input class="form-control me-2 search-input" type="search" placeholder="Search destinations"/>
-                <button class="btn btn-search" type="submit"><i class="fa-solid fa-magnifying-glass"></i>&nbsp;Search</button>
+        <div class="navbar-nav ms-lg-auto nav-search-wrap">
+            <form class="d-flex nav-search" role="search">
+                <input class="form-control search-input" type="search" placeholder="Search" value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>" aria-label="Search" />
+                <button class="btn btn-search" type="submit" aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
             </form>
         </div>
-        <div class="navbar-nav ms-auto">
-            <a class="nav-link" href="/listings/new">Your Home</a>
+        <div class="navbar-nav ms-lg-3 nav-account">
             <% if(!currUser) { %>
-
-                <a class="nav-link"  href="/signup"><b>Sign Up</b></a>
-                <a class="nav-link" href="/login"><b>Log In</b></a>
+                <a class="nav-link nav-pill" href="/signup">Sign Up</a>
+                <a class="nav-link nav-pill nav-pill-accent" href="/login">Log In</a>
             <% } %>
             <% if(currUser) { %>
-                <a class="nav-link" href="/logout"><b>Log Out</b></a>
+                <% if(currUser.role === "provider") { %>
+                    <a class="nav-link nav-pill" href="/provider/dashboard">Provider Dashboard</a>
+                <% } else { %>
+                    <a class="nav-link nav-pill" href="/bookings">My Bookings</a>
+                <% } %>
+                <a class="nav-link nav-pill nav-pill-accent" href="/logout">Log Out</a>
             <% } %>
-            
         </div>
         </div>
     </div>

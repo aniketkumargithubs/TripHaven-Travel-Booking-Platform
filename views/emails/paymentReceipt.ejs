@@ -1,0 +1,10 @@
+<div style="font-family: Manrope, sans-serif; color:#0b1b1f; padding:18px; background:#f7fbff; border-radius:10px;">
+    <h2 style="color:#0b1b1f">Payment Receipt</h2>
+    <p>Hi <%= user.displayName || user.username || 'Guest' %>,</p>
+    <p>Thanks for your payment for <strong><%= listing.title %></strong>.</p>
+    <p><strong>Amount:</strong> ₹ <%= (amount/100).toFixed(2) %> <%= currency.toUpperCase() %></p>
+    <p><strong>Booking ID:</strong> <%= booking._id %></p>
+    <p>We have confirmed your reservation. See you soon!</p>
+    <hr />
+    <p style="font-size:12px;color:#556678">If you didn't make this payment, please contact support.</p>
+</div>

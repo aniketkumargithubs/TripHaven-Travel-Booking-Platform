@@ -2,17 +2,18 @@ const Listing=require("../models/listing.js");
 const Review=require("../models/review.js");
 
 module.exports.reviewRoute=async(req,res)=>{
-    let listing=await Listing.findById(req.params.id);
-    let newReview=new Review(req.body.review);
-    newReview.author=req.user._id;
+    const { id } = req.params;
+    const listing = await Listing.findById(id);
+    const newReview = new Review(req.body.review);
+    newReview.author = req.user._id;
     await newReview.save();
 
-    listing.reviews.push(newReview);
+    // Push the new review's id onto the listing reviews array without
+    // re-saving the full listing document (avoids triggering listing validation)
+    await Listing.findByIdAndUpdate(id, { $push: { reviews: newReview._id } });
 
-    await newReview.save();
-    await listing.save();
-    req.flash("success","New Review Created!");
-    res.redirect(`/listings/${listing._id}`);
+    req.flash("success", "New Review Created!");
+    res.redirect(`/listings/${id}`);
 };
 
 module.exports.deleteReview=async(req,res)=>{

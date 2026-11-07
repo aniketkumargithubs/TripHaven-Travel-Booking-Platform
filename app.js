@@ -1,6 +1,4 @@
-if(process.env.NODE_ENV!="production"){
-    require("dotenv").config();
-}
+require("dotenv").config();
 const express=require("express");
 const app=express();
 const mongoose=require("mongoose");
@@ -18,7 +16,10 @@ const User=require("./models/user.js");
 
 const listingRouter=require("./routes/listing.js");
 const reviewRouter=require("./routes/review.js");
+const bookingRouter=require("./routes/bookings.js");
+const paymentsRouter=require("./routes/payments.js");
 const userRouter=require("./routes/user.js");
+const providerRouter=require("./routes/provider.js");
 
 const port = process.env.PORT || 8080;
 
@@ -29,7 +30,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "/public")));
 
-// const Mongo_Url="mongodb://127.0.0.1:27017/wanderlust";
+// const Mongo_Url="mongodb://127.0.0.1:27017/TripHaven";
 const dbURL=process.env.ATLASDB_URL;
 main().then(()=>{
     console.log("MongoDB connected successfully");
@@ -89,6 +90,9 @@ app.use((req,res,next)=>{
 
 app.use("/listings",listingRouter);
 app.use("/listings/:id/reviews",reviewRouter);
+app.use("/bookings",bookingRouter);
+app.use("/payments", paymentsRouter);
+app.use("/provider", providerRouter);
 app.use("/",userRouter);
 
 

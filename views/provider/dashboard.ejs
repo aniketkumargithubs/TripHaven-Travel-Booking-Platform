@@ -1,0 +1,68 @@
+<%- layout("/layouts/boilerplate") -%>
+
+<section class="bookings-page">
+    <div class="page-header d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <span class="eyebrow">Provider workspace</span>
+            <h1>Property Dashboard</h1>
+            <p>Create, update, and manage your stays and reservations.</p>
+        </div>
+        <a href="/listings/new" class="btn add-btn">Add Property</a>
+    </div>
+
+    <h2>Your Properties</h2>
+    <% if (listings.length) { %>
+        <div class="row g-4 mb-5">
+            <% listings.forEach((listing) => { %>
+                <div class="col-md-6 col-lg-4">
+                    <div class="card booking-card h-100">
+                        <div class="card-body">
+                            <h3><a href="/listings/<%= listing._id %>"><%= listing.title %></a></h3>
+                            <p class="text-muted"><%= listing.location %>, <%= listing.country %></p>
+                            <p><strong>Price:</strong> <%= listing.price %> per night</p>
+                            <a href="/listings/<%= listing._id %>/edit" class="btn btn-outline-dark btn-sm">Edit</a>
+                            <form method="POST" action="/provider/listings/<%= listing._id %>?_method=DELETE" class="d-inline">
+                                <button class="btn dl-btn btn-sm">Remove</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    <% } else { %>
+        <p class="empty-copy">You have not added a property yet.</p>
+    <% } %>
+
+    <h2>Incoming Bookings</h2>
+    <% if (bookings.length) { %>
+        <div class="row g-4">
+            <% bookings.forEach((booking) => { %>
+                <div class="col-md-6">
+                    <div class="card booking-card h-100">
+                        <div class="card-body">
+                            <h3><%= booking.listing.title %></h3>
+                            <p><strong>Guest:</strong> <%= booking.user.username %> (<%= booking.user.email %>)</p>
+                            <p><strong>Guests:</strong> <%= booking.adults %> adults, <%= booking.children %> children</p>
+                            <% if (booking.checkIn && booking.checkOut) { %>
+                                <p><strong>Dates:</strong> <%= booking.checkIn.toLocaleDateString("en-IN") %> to <%= booking.checkOut.toLocaleDateString("en-IN") %></p>
+                            <% } %>
+                            <p><strong>Status:</strong> <span class="badge bg-secondary"><%= booking.status %></span></p>
+                            <% if (booking.status === "pending") { %>
+                                <form method="POST" action="/bookings/<%= booking._id %>/status?_method=PATCH" class="d-inline">
+                                    <input type="hidden" name="status" value="accepted">
+                                    <button class="btn add-btn btn-sm">Accept</button>
+                                </form>
+                                <form method="POST" action="/bookings/<%= booking._id %>/status?_method=PATCH" class="d-inline">
+                                    <input type="hidden" name="status" value="rejected">
+                                    <button class="btn dl-btn btn-sm">Reject</button>
+                                </form>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    <% } else { %>
+        <p class="empty-copy">No booking requests yet.</p>
+    <% } %>
+</section>

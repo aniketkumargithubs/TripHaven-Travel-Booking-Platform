@@ -1,0 +1,19 @@
+<%- layout("/layouts/boilerplate") -%>
+
+<section class="checkout-shell">
+    <div class="form-card">
+        <h2 class="form-heading">Complete payment</h2>
+        <p>Pay for: <strong><%= booking.listing.title %></strong></p>
+        <p>Amount: <strong>$ <%= amount %> <%= currency.toUpperCase() %></strong></p>
+
+        <div id="paypal-button-container" style="margin: 18px 0;"></div>
+        <div id="payment-error" role="alert" style="color:#ffb3b3"></div>
+    </div>
+</section>
+
+<script src="https://www.paypal.com/sdk/js?client-id=<%= clientId %>&currency=<%= currency %>"></script>
+<script>
+    const paypalOrderId = '<%= orderId %>';
+    const bookingId = '<%= booking._id %>';
+</script>
+<script src="/js/payments.js"></script>
